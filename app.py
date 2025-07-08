@@ -81,44 +81,52 @@ if submitted:
     attr_pred = xgb_model.predict(attr_input_scaled)[0]
 
    # === Display Predictions with Stats-Based Explanations ===
+# === Display Predictions with Clean Explanations ===
 st.subheader("Classification Results")
 classification_explanations = {
     "BurnoutRisk": (
-        "📊 **BurnoutRisk: Yes** — Employees with long hours, low rest, and low manager support "
-        "are statistically **2.6× more likely** to experience burnout, which affects retention and output."
+        "**BurnoutRisk: Yes** — Employees with long hours, insufficient rest, and low manager support "
+        "are statistically 2.6× more likely to experience burnout, which can reduce retention and output."
     ),
     "NeedsSupport": (
-        "📊 **NeedsSupport: Yes** — Over 65% of employees experiencing stress or poor engagement "
-        "benefit from therapy or structured support programs."
+        "**NeedsSupport: Yes** — Over 65% of employees facing high stress or low engagement benefit from "
+        "structured support programs or counseling access."
     ),
     "HighStressFlag": (
-        "📊 **HighStressFlag: Yes** — High stress affects ~70% of workforce performance decline. "
-        "This flag suggests risk of absenteeism and disengagement."
+        "**HighStressFlag: Yes** — High stress is linked to nearly 70% of performance decline. "
+        "Flagged employees may face absenteeism or disengagement if not supported."
     ),
 }
+
 for i, col in enumerate(class_labels):
     result = 'Yes' if class_preds[i] == 1 else 'No'
     st.write(f"**{col}:** {result}")
     if class_preds[i] == 1:
         st.markdown(f"<div style='color:#BBBBBB;font-size:0.9em'>{classification_explanations[col]}</div>", unsafe_allow_html=True)
 
+# === Regression Results ===
 st.subheader("Regression Estimates")
 regression_explanations = {
     "MentalHealthDaysOff": lambda x: (
-        "⚠️ Employees needing more than **3 days/month off** due to mental health are in the **top 20% risk zone** for burnout and productivity loss."
-        if x > 3 else "✅ Within expected healthy range (≤3 days/month)."
+        "Employees requiring more than 3 days/month off for mental health fall into the high-risk zone "
+        "for burnout and reduced long-term productivity."
+        if x > 3 else
+        "This estimate falls within a typical healthy range (≤3 days/month)."
     ),
     "JobSatisfaction": lambda x: (
-        "📉 Low satisfaction (<5) indicates risk of disengagement. In surveys, scores below 5 correlate with **31% lower retention odds**."
-        if x < 5 else "🙂 Fair to high satisfaction — stability likely."
+        "Scores below 5 typically indicate dissatisfaction, which correlates with lower motivation and retention."
+        if x < 5 else
+        "The employee appears to have fair to good job satisfaction."
     ),
     "ProductivityScore": lambda x: (
-        "🔻 Moderate productivity (<6) — may be impacted by stress, disengagement, or fatigue."
-        if x < 6 else "📈 Healthy productivity levels."
+        "A score below 6 suggests moderate productivity, which may be affected by engagement or mental health."
+        if x < 6 else
+        "The employee is likely maintaining a healthy level of productivity."
     ),
     "WellBeingScore": lambda x: (
-        "🟠 Slightly low well-being (<7). May require interventions (rest, social support)."
-        if x < 7 else "🟢 Strong well-being — protective factor."
+        "Well-being below 7 may require proactive support, as it indicates strain or low resilience."
+        if x < 7 else
+        "This score suggests strong well-being, a protective factor against burnout."
     ),
 }
 
@@ -127,14 +135,15 @@ for i, col in enumerate(reg_labels):
     st.write(f"**{col}:** {pred:.2f}")
     st.caption(regression_explanations[col](pred))
 
+# === Attrition Risk ===
 st.subheader("Attrition Risk")
 attr_result = "Likely to leave" if attr_pred == 1 else "Not likely to leave"
 st.write(f"**{attr_result}**")
 st.caption(
-    "📌 Employees flagged as likely to leave often report low job satisfaction and high burnout. "
-    "Attrition costs can be **30–50% of annual salary**."
+    "Employees predicted as likely to leave often exhibit high stress, low satisfaction, or limited career growth. "
+    "Turnover in such cases can cost 30–50% of their annual compensation."
     if attr_pred == 1 else
-    "🧷 Low attrition risk — maintain engagement and support to keep it stable."
+    "This employee shows low risk of attrition. Continued engagement and growth support can maintain this stability."
 )
 
 # === Collapsible Recommendations Section ===
