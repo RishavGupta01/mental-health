@@ -13,7 +13,7 @@ features = joblib.load("models/feature_columns.pkl")
 # === Configure Streamlit ===
 st.set_page_config(page_title="Mental Health Insights", layout="centered")
 
-st.title("Mental Health Insights")
+st.title("🧠 Mental Health Insights")
 st.markdown("Analyze burnout risk, mental health days, satisfaction, and productivity based on employee inputs.")
 
 # === Input Form ===
