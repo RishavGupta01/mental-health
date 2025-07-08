@@ -19,20 +19,42 @@ st.title("Mental Health Insights Dashboard")
 st.markdown("Predict burnout, stress flags, need for support, attrition risk, and productivity indicators.")
 
 # === Input Form ===
+# === Input Form with Hints ===
 with st.form("input_form"):
     st.subheader("Enter Employee Data")
     input_data = {}
 
+    field_hints = {
+        "Gender": "Select gender identity",
+        "Department": "Department the employee works in",
+        "EducationLevel": "Highest education level attained",
+        "HasMentalHealthSupport": "Does the company offer mental health support?",
+        "RemoteWork": "Is the employee working remotely?",
+        "CompanySize": "Company size (e.g., 1–10, 11–50...)",
+        "MentalHealthCoverage": "Does company cover mental health expenses?",
+        "Age": "Age in years (18–65)",
+        "WorkHoursPerWeek": "Typical hours worked per week (30–80)",
+        "YearsInCompany": "Years spent at current company (0–40)",
+        "SleepHours": "Average hours of sleep per day (0–12)",
+        "PhysicalActivityHrs": "Exercise hours per week (0–20)",
+        "WorkLifeBalanceScore": "Self-rated work-life balance (1–10)",
+        "StressLevel": "Self-rated stress level (1 = low, 10 = high)",
+        "EngagementScore": "Engagement level at work (1–10)",
+        "SocialSupportScore": "Support from coworkers/supervisors (1–10)",
+    }
+
     for col in features:
+        label = f"{col} — {field_hints.get(col, '')}"
         if col in encoders:
             options = list(encoders[col].classes_)
-            value = st.selectbox(f"{col}", options, key=col)
-            input_data[col] = encoders[col].transform([value])[0]
+            selected = st.selectbox(label, options, key=col)
+            input_data[col] = encoders[col].transform([selected])[0]
         else:
-            value = st.number_input(f"{col}", step=1.0, key=col)
+            value = st.number_input(label, step=1.0, key=col)
             input_data[col] = value
 
     submitted = st.form_submit_button("Run Predictions")
+
 
 # === Make Predictions ===
 if submitted:
