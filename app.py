@@ -80,98 +80,96 @@ if submitted:
     attr_input_scaled = scaler.transform(attr_input)
     attr_pred = xgb_model.predict(attr_input_scaled)[0]
 
-   # === Display Predictions with Stats-Based Explanations ===
-# === Display Predictions with Clean Explanations ===
-st.subheader("Classification Results")
-classification_explanations = {
-    "BurnoutRisk": (
-        "**BurnoutRisk: Yes** — Employees with long hours, insufficient rest, and low manager support "
-        "are statistically 2.6× more likely to experience burnout, which can reduce retention and output."
-    ),
-    "NeedsSupport": (
-        "**NeedsSupport: Yes** — Over 65% of employees facing high stress or low engagement benefit from "
-        "structured support programs or counseling access."
-    ),
-    "HighStressFlag": (
-        "**HighStressFlag: Yes** — High stress is linked to nearly 70% of performance decline. "
-        "Flagged employees may face absenteeism or disengagement if not supported."
-    ),
-}
+    # === Display Classification Results ===
+    st.subheader("Classification Results")
+    classification_explanations = {
+        "BurnoutRisk": (
+            "**BurnoutRisk: Yes** — Employees with long hours, insufficient rest, and low manager support "
+            "are statistically 2.6× more likely to experience burnout, which can reduce retention and output."
+        ),
+        "NeedsSupport": (
+            "**NeedsSupport: Yes** — Over 65% of employees facing high stress or low engagement benefit from "
+            "structured support programs or counseling access."
+        ),
+        "HighStressFlag": (
+            "**HighStressFlag: Yes** — High stress is linked to nearly 70% of performance decline. "
+            "Flagged employees may face absenteeism or disengagement if not supported."
+        ),
+    }
 
-for i, col in enumerate(class_labels):
-    result = 'Yes' if class_preds[i] == 1 else 'No'
-    st.write(f"**{col}:** {result}")
-    if class_preds[i] == 1:
-        st.markdown(f"<div style='color:#BBBBBB;font-size:0.9em'>{classification_explanations[col]}</div>", unsafe_allow_html=True)
+    for i, col in enumerate(class_labels):
+        result = 'Yes' if class_preds[i] == 1 else 'No'
+        st.write(f"**{col}:** {result}")
+        if class_preds[i] == 1:
+            st.markdown(f"<div style='color:#BBBBBB;font-size:0.9em'>{classification_explanations[col]}</div>", unsafe_allow_html=True)
 
-# === Regression Results ===
-st.subheader("Regression Estimates")
-regression_explanations = {
-    "MentalHealthDaysOff": lambda x: (
-        "Employees requiring more than 3 days/month off for mental health fall into the high-risk zone "
-        "for burnout and reduced long-term productivity."
-        if x > 3 else
-        "This estimate falls within a typical healthy range (≤3 days/month)."
-    ),
-    "JobSatisfaction": lambda x: (
-        "Scores below 5 typically indicate dissatisfaction, which correlates with lower motivation and retention."
-        if x < 5 else
-        "The employee appears to have fair to good job satisfaction."
-    ),
-    "ProductivityScore": lambda x: (
-        "A score below 6 suggests moderate productivity, which may be affected by engagement or mental health."
-        if x < 6 else
-        "The employee is likely maintaining a healthy level of productivity."
-    ),
-    "WellBeingScore": lambda x: (
-        "Well-being below 7 may require proactive support, as it indicates strain or low resilience."
-        if x < 7 else
-        "This score suggests strong well-being, a protective factor against burnout."
-    ),
-}
+    # === Regression Results ===
+    st.subheader("Regression Estimates")
+    regression_explanations = {
+        "MentalHealthDaysOff": lambda x: (
+            "Employees requiring more than 3 days/month off for mental health fall into the high-risk zone "
+            "for burnout and reduced long-term productivity."
+            if x > 3 else
+            "This estimate falls within a typical healthy range (≤3 days/month)."
+        ),
+        "JobSatisfaction": lambda x: (
+            "Scores below 5 typically indicate dissatisfaction, which correlates with lower motivation and retention."
+            if x < 5 else
+            "The employee appears to have fair to good job satisfaction."
+        ),
+        "ProductivityScore": lambda x: (
+            "A score below 6 suggests moderate productivity, which may be affected by engagement or mental health."
+            if x < 6 else
+            "The employee is likely maintaining a healthy level of productivity."
+        ),
+        "WellBeingScore": lambda x: (
+            "Well-being below 7 may require proactive support, as it indicates strain or low resilience."
+            if x < 7 else
+            "This score suggests strong well-being, a protective factor against burnout."
+        ),
+    }
 
-for i, col in enumerate(reg_labels):
-    pred = reg_preds[i]
-    st.write(f"**{col}:** {pred:.2f}")
-    st.caption(regression_explanations[col](pred))
+    for i, col in enumerate(reg_labels):
+        pred = reg_preds[i]
+        st.write(f"**{col}:** {pred:.2f}")
+        st.caption(regression_explanations[col](pred))
 
-# === Attrition Risk ===
-st.subheader("Attrition Risk")
-attr_result = "Likely to leave" if attr_pred == 1 else "Not likely to leave"
-st.write(f"**{attr_result}**")
-st.caption(
-    "Employees predicted as likely to leave often exhibit high stress, low satisfaction, or limited career growth. "
-    "Turnover in such cases can cost 30–50% of their annual compensation."
-    if attr_pred == 1 else
-    "This employee shows low risk of attrition. Continued engagement and growth support can maintain this stability."
-)
+    # === Attrition Risk ===
+    st.subheader("Attrition Risk")
+    attr_result = "Likely to leave" if attr_pred == 1 else "Not likely to leave"
+    st.write(f"**{attr_result}**")
+    st.caption(
+        "Employees predicted as likely to leave often exhibit high stress, low satisfaction, or limited career growth. "
+        "Turnover in such cases can cost 30–50% of their annual compensation."
+        if attr_pred == 1 else
+        "This employee shows low risk of attrition. Continued engagement and growth support can maintain this stability."
+    )
 
-# === Collapsible Recommendations Section ===
-with st.expander("📋 Recommendations & Next Steps"):
-    st.markdown("""
-    Based on the predictions, here are some recommended actions:
+    # === Collapsible Recommendations Section ===
+    with st.expander("Recommendations & Next Steps"):
+        st.markdown("""
+        Based on the predictions, here are some recommended actions:
 
-    **1. Burnout & Stress**
-    - Introduce short-term leaves or mental health days.
-    - Encourage reduction in work hours if over 55/week.
-    - Offer mindfulness or resilience workshops.
+        **1. Burnout & Stress**
+        - Introduce short-term leaves or mental health days.
+        - Encourage reduction in work hours if over 55/week.
+        - Offer mindfulness or resilience workshops.
 
-    **2. Support & Well-Being**
-    - Ensure the employee has access to therapy and internal support resources.
-    - Encourage regular manager 1-on-1 check-ins.
-    - Promote team bonding or peer-support programs.
+        **2. Support & Well-Being**
+        - Ensure the employee has access to therapy and internal support resources.
+        - Encourage regular manager 1-on-1 check-ins.
+        - Promote team bonding or peer-support programs.
 
-    **3. Productivity & Engagement**
-    - Reassign tasks to match employee strengths.
-    - Create a career growth plan if CareerGrowthScore < 6.
-    - Monitor work-life balance via engagement surveys.
+        **3. Productivity & Engagement**
+        - Reassign tasks to match employee strengths.
+        - Create a career growth plan if CareerGrowthScore < 6.
+        - Monitor work-life balance via engagement surveys.
 
-    **4. Attrition Risk**
-    - Have a transparent conversation about career path and satisfaction.
-    - Recognize and reward positive contributions.
-    - If patterns persist, consider offering internal mobility or mentoring.
-
-    """)
+        **4. Attrition Risk**
+        - Have a transparent conversation about career path and satisfaction.
+        - Recognize and reward positive contributions.
+        - If patterns persist, consider offering internal mobility or mentoring.
+        """)
 
 
 # === Custom Styling ===
