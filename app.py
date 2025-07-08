@@ -11,14 +11,13 @@ encoders = joblib.load("models/label_encoders.pkl")
 features = joblib.load("models/feature_columns.pkl")
 
 # === Configure Streamlit ===
-st.set_page_config(page_title="Mental Health Insights", layout="centered")
-
-st.title("🧠 Mental Health Insights")
-st.markdown("Analyze burnout risk, mental health days, satisfaction, and productivity based on employee inputs.")
+st.set_page_config(page_title="Mental Health Insights", layout="wide")
+st.title("Mental Health Insights Dashboard")
+st.markdown("Analyze burnout risk, mental health estimates, and productivity insights based on employee inputs.")
 
 # === Input Form ===
 with st.form("input_form"):
-    st.subheader("📥 Enter Employee Data")
+    st.subheader("Enter Employee Data")
     input_data = {}
 
     field_hints = {
@@ -63,76 +62,92 @@ if submitted:
     input_df = pd.DataFrame([input_data])
     input_scaled = scaler.transform(input_df)
 
-    # === Burnout Classification ===
+    # === Classification ===
     burnout_pred = clf.predict(input_scaled)[0]
 
-    # === Regression Predictions ===
+    # === Regression ===
     reg_preds = reg.predict(input_scaled)[0]
     reg_labels = ["MentalHealthDaysOff", "JobSatisfaction", "ProductivityScore"]
 
-    # === Display Results ===
-    st.subheader("📊 Prediction Results")
-
+    # === Output Section ===
+    st.subheader("Burnout Prediction")
     result = "Yes" if burnout_pred == 1 else "No"
     st.write(f"**BurnoutRisk:** {result}")
     if burnout_pred == 1:
-        st.caption("Employees with long work hours, little rest, and weak support are more likely to burn out.")
+        st.caption("Employees with longer hours, low rest, and weak support are 2.6× more prone to burnout.")
 
-    st.markdown("### 📈 Mental Health & Productivity Estimates")
-    explanations = {
-        "MentalHealthDaysOff": lambda x: "Over 3 days/month suggests high risk zone." if x > 3 else "Healthy range (≤3 days/month).",
-        "JobSatisfaction": lambda x: "Low satisfaction — possible disengagement." if x < 5 else "Fair to good satisfaction.",
-        "ProductivityScore": lambda x: "Moderate productivity — check for blockers." if x < 6 else "Healthy productivity trend.",
+    st.subheader("Mental Health & Productivity Estimates")
+    regression_explanations = {
+        "MentalHealthDaysOff": lambda x: (
+            "More than 3 days/month indicates high emotional fatigue." if x > 3
+            else "Within the normal range of ≤3 mental health days/month."
+        ),
+        "JobSatisfaction": lambda x: (
+            "Scores under 5 suggest dissatisfaction or disengagement." if x < 5
+            else "Satisfaction level is fair or high."
+        ),
+        "ProductivityScore": lambda x: (
+            "Moderate productivity. May need support or motivation." if x < 6
+            else "Healthy productivity trend."
+        ),
     }
 
     for i, col in enumerate(reg_labels):
-        val = reg_preds[i]
-        st.write(f"**{col}:** {val:.2f}")
-        st.caption(explanations[col](val))
+        value = reg_preds[i]
+        st.write(f"**{col}:** {value:.2f}")
+        st.caption(regression_explanations[col](value))
 
-    # === Dynamic Recommendations ===
-    with st.expander("🛠 Recommendations & Next Steps"):
+    # === Recommendations Based on Model Output ===
+    with st.expander("Recommendations & Next Steps"):
+        st.markdown("These insights are based on the predictions:")
+
         if burnout_pred == 1:
             st.markdown("**1. Burnout Risk**")
-            st.markdown("- Offer mental health days.\n- Reduce overwork.\n- Encourage mindfulness breaks.")
+            st.markdown("""
+            - Reduce work hours or redistribute workload.
+            - Offer short mental health leaves.
+            - Promote mindfulness or resilience sessions.
+            """)
 
-        if reg_preds[0] > 3:
+        if reg_preds[reg_labels.index("MentalHealthDaysOff")] > 3:
             st.markdown("**2. High Mental Health Leave**")
-            st.markdown("- Provide therapy access.\n- Schedule mental health check-ins.")
+            st.markdown("""
+            - Conduct check-ins to understand mental health needs.
+            - Provide optional therapy or digital wellness programs.
+            """)
 
-        if reg_preds[1] < 5:
-            st.markdown("**3. Low Job Satisfaction**")
-            st.markdown("- Discuss career growth.\n- Realign responsibilities.")
+        if reg_preds[reg_labels.index("JobSatisfaction")] < 5:
+            st.markdown("**3. Low Satisfaction**")
+            st.markdown("""
+            - Initiate a conversation around career growth and motivation.
+            - Offer new project opportunities aligned with interests.
+            """)
 
-        if reg_preds[2] < 6:
-            st.markdown("**4. Productivity Support**")
-            st.markdown("- Reduce task load.\n- Offer skill-building sessions.")
+        if reg_preds[reg_labels.index("ProductivityScore")] < 6:
+            st.markdown("**4. Productivity Concerns**")
+            st.markdown("""
+            - Identify blockers in task flow or team dynamics.
+            - Explore flexible deadlines or environment adjustments.
+            """)
 
-# === Mobile-Friendly Styling ===
+# === Custom Styling (Dark UI) ===
 st.markdown("""
 <style>
-html, body, [class*="css"] {
-    background-color: #0e1117;
-    color: #ffffff;
-    font-family: 'Segoe UI', sans-serif;
-    font-size: 16px;
-    padding: 10px;
-}
-@media screen and (max-width: 768px) {
-    .stSelectbox div[data-baseweb="select"], input, .stButton > button {
-        width: 100% !important;
-        font-size: 16px !important;
+    html, body, [class*="css"]  {
+        background-color: #0e1117;
+        color: #ffffff;
+        font-family: 'Segoe UI', sans-serif;
+        line-height: 1.6;
     }
-    .stForm, .stMarkdown, .stSubheader, .stCaption {
-        padding: 8px;
+    .stMarkdown { margin-bottom: 1.5rem !important; }
+    .stCaption { font-size: 0.9rem; color: #BBBBBB; margin-bottom: 20px; }
+    .stSubheader { margin-top: 30px !important; margin-bottom: 10px !important; }
+    .stExpander { margin-top: 30px; }
+    .stButton>button {
+        background-color: #262730;
+        color: white;
+        border-radius: 6px;
+        padding: 10px 20px;
     }
-}
-.stButton > button {
-    background-color: #262730;
-    color: white;
-    padding: 12px 24px;
-    border-radius: 6px;
-    font-size: 16px;
-}
 </style>
 """, unsafe_allow_html=True)
