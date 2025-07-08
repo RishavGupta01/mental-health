@@ -24,7 +24,7 @@ with st.form("input_form"):
     st.subheader("Enter Employee Data")
     input_data = {}
 
-   field_hints = {
+field_hints = {
     "Gender": "Select gender identity",
     "Department": "Department the employee works in",
     "EducationLevel": "Highest education level attained",
@@ -46,7 +46,7 @@ with st.form("input_form"):
     "ManagerSupportScore": "Support from manager/supervisor (1 = low, 10 = high)",
     "CareerGrowthScore": "Perceived career growth opportunities (1 = poor, 10 = strong)",
     "BurnoutLevel": "Self-assessed burnout level (1 = low, 10 = high)",
-}
+    }
 
 
     for col in features:
