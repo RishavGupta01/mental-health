@@ -146,29 +146,68 @@ if submitted:
     )
 
     # === Collapsible Recommendations Section ===
-    with st.expander("Recommendations & Next Steps"):
-        st.markdown("""
-        Based on the predictions, here are some recommended actions:
+    # === Dynamic Recommendations Based on Predictions ===
+with st.expander("Recommendations & Next Steps"):
+    st.markdown("Based on the predictions, here are some recommended actions:")
 
-        **1. Burnout & Stress**
+    # 1. Burnout Risk
+    if class_preds[class_labels.index("BurnoutRisk")] == 1:
+        st.markdown("**1. Burnout & Stress**")
+        st.markdown("""
         - Introduce short-term leaves or mental health days.
         - Encourage reduction in work hours if over 55/week.
         - Offer mindfulness or resilience workshops.
+        """)
 
-        **2. Support & Well-Being**
+    # 2. Needs Support
+    if class_preds[class_labels.index("NeedsSupport")] == 1:
+        st.markdown("**2. Support & Well-Being**")
+        st.markdown("""
         - Ensure the employee has access to therapy and internal support resources.
         - Encourage regular manager 1-on-1 check-ins.
         - Promote team bonding or peer-support programs.
+        """)
 
-        **3. Productivity & Engagement**
-        - Reassign tasks to match employee strengths.
-        - Create a career growth plan if CareerGrowthScore < 6.
-        - Monitor work-life balance via engagement surveys.
+    # 3. High Stress
+    if class_preds[class_labels.index("HighStressFlag")] == 1:
+        st.markdown("**3. High Stress Management**")
+        st.markdown("""
+        - Evaluate workload and redistribute tasks if necessary.
+        - Consider weekly check-ins to monitor mental state.
+        - Provide access to self-paced de-stress activities.
+        """)
 
-        **4. Attrition Risk**
-        - Have a transparent conversation about career path and satisfaction.
-        - Recognize and reward positive contributions.
-        - If patterns persist, consider offering internal mobility or mentoring.
+    # 4. Regression-Based Actions
+    if reg_preds[reg_labels.index("JobSatisfaction")] < 5:
+        st.markdown("**4. Job Satisfaction & Growth**")
+        st.markdown("""
+        - Initiate transparent career development discussions.
+        - Align work assignments with employee strengths.
+        - Set short-term goals and recognize achievements.
+        """)
+
+    if reg_preds[reg_labels.index("ProductivityScore")] < 6:
+        st.markdown("**5. Productivity Support**")
+        st.markdown("""
+        - Review task complexity and cognitive load.
+        - Adjust deadlines if necessary to reduce pressure.
+        - Explore if disengagement is due to work culture or tools.
+        """)
+
+    if reg_preds[reg_labels.index("WellBeingScore")] < 7:
+        st.markdown("**6. Well-Being Support**")
+        st.markdown("""
+        - Recommend wellness check-ins or survey feedback.
+        - Provide optional health sessions or gym vouchers.
+        - Promote good sleep and exercise habits.
+        """)
+
+    if attr_pred == 1:
+        st.markdown("**7. Attrition Risk**")
+        st.markdown("""
+        - Have a 1-on-1 conversation about job satisfaction and goals.
+        - Highlight future opportunities and learning paths.
+        - Consider mentoring or lateral moves before churn.
         """)
 
 
