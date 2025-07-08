@@ -146,7 +146,7 @@ if submitted:
     )
 
     # === Collapsible Recommendations Section ===
-      with st.expander("Recommendations & Next Steps"):
+    with st.expander("Recommendations & Next Steps"):
         st.markdown("Based on the predictions, here are some recommended actions:")
 
         # 1. Burnout Risk
