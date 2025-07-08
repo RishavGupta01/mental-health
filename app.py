@@ -179,21 +179,34 @@ st.markdown("""
         background-color: #0e1117;
         color: #ffffff;
         font-family: 'Segoe UI', sans-serif;
+        line-height: 1.6;
     }
+
+    .stMarkdown {
+        margin-bottom: 1.5rem !important;
+    }
+
+    .stCaption {
+        font-size: 0.9rem;
+        color: #BBBBBB;
+        margin-bottom: 20px;
+    }
+
+    .stSubheader {
+        margin-top: 30px !important;
+        margin-bottom: 10px !important;
+    }
+
+    .stExpander {
+        margin-top: 30px;
+    }
+
     .stButton>button {
         background-color: #262730;
         color: white;
         border-radius: 6px;
+        padding: 10px 20px;
     }
-    .stSelectbox>div>div>div {
-        background-color: #262730 !important;
-    }
-    .stTextInput>div>input {
-        background-color: #1a1d21;
-        color: #ffffff;
-    }
-    .streamlit-expanderHeader {
-        font-weight: 700 !important;
-        font-size: 18px !important;
 </style>
 """, unsafe_allow_html=True)
+
