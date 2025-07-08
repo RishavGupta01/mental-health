@@ -24,30 +24,29 @@ with st.form("input_form"):
     st.subheader("Enter Employee Data")
     input_data = {}
 
-field_hints = {
-    "Gender": "Select gender identity",
-    "Department": "Department the employee works in",
-    "EducationLevel": "Highest education level attained",
-    "HasMentalHealthSupport": "Does the company offer mental health support?",
-    "HasTherapyAccess": "Does the employee have access to therapy or counseling?",
-    "RemoteWork": "Is the employee working remotely?",
-    "CompanySize": "Company size (e.g., 1–10, 11–50...)",
-    "MentalHealthCoverage": "Does company cover mental health expenses?",
-    "Age": "Age in years (18–65)",
-    "WorkHoursPerWeek": "Typical hours worked per week (30–80)",
-    "YearsInCompany": "Years spent at current company (0–40)",
-    "SleepHours": "Average hours of sleep per day (0–12)",
-    "PhysicalActivityHrs": "Exercise hours per week (0–20)",
-    "WorkLifeBalanceScore": "Self-rated work-life balance (1–10)",
-    "StressLevel": "Self-rated stress level (1 = low, 10 = high)",
-    "EngagementScore": "Engagement level at work (1–10)",
-    "SocialSupportScore": "Support from coworkers/supervisors (1–10)",
-    "CommuteTime": "Daily commute duration in minutes (0–180)",
-    "ManagerSupportScore": "Support from manager/supervisor (1 = low, 10 = high)",
-    "CareerGrowthScore": "Perceived career growth opportunities (1 = poor, 10 = strong)",
-    "BurnoutLevel": "Self-assessed burnout level (1 = low, 10 = high)",
+    field_hints = {
+        "Gender": "Select gender identity",
+        "Department": "Department the employee works in",
+        "EducationLevel": "Highest education level attained",
+        "HasMentalHealthSupport": "Does the company offer mental health support?",
+        "HasTherapyAccess": "Does the employee have access to therapy or counseling?",
+        "RemoteWork": "Is the employee working remotely?",
+        "CompanySize": "Company size (e.g., 1–10, 11–50...)",
+        "MentalHealthCoverage": "Does company cover mental health expenses?",
+        "Age": "Age in years (18–65)",
+        "WorkHoursPerWeek": "Typical hours worked per week (30–80)",
+        "YearsInCompany": "Years spent at current company (0–40)",
+        "SleepHours": "Average hours of sleep per day (0–12)",
+        "PhysicalActivityHrs": "Exercise hours per week (0–20)",
+        "WorkLifeBalanceScore": "Self-rated work-life balance (1–10)",
+        "StressLevel": "Self-rated stress level (1 = low, 10 = high)",
+        "EngagementScore": "Engagement level at work (1–10)",
+        "SocialSupportScore": "Support from coworkers/supervisors (1–10)",
+        "CommuteTime": "Daily commute duration in minutes (0–180)",
+        "ManagerSupportScore": "Support from manager/supervisor (1 = low, 10 = high)",
+        "CareerGrowthScore": "Perceived career growth opportunities (1 = poor, 10 = strong)",
+        "BurnoutLevel": "Self-assessed burnout level (1 = low, 10 = high)",
     }
-
 
     for col in features:
         label = f"{col} — {field_hints.get(col, '')}"
@@ -60,6 +59,7 @@ field_hints = {
             input_data[col] = value
 
     submitted = st.form_submit_button("Run Predictions")
+
 
 
 # === Make Predictions ===
